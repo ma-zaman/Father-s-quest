@@ -2,8 +2,10 @@ import java.io.*;
 import java.util.*;
 import java.awt.event.*;
 import java.text.SimpleDateFormat;
+import javax.swing.*;
+import java.awt.*;
 
-public class Jeu{
+public class Jeu extends JFrame {
   private ArrayList<PNJ> ennemies;
   private ArrayList<PJ> joueurs;
   private ArrayList<Integer> t;
@@ -13,65 +15,111 @@ public class Jeu{
   private char mode;
   private int nbJoueurs;
   private Double avancement;
+  private int w;
+  private int h;
+  private JButton butOui;
+  private JButton butNon;
 
-  public Jeu(char c)
+  public Jeu(char c, int w, int h)
   {
+    super("FATHER'S QUEST");
+    this.w = w;
+    this.h = h;
+
+    this.setSize(w,h-10);
+    this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+    this.setLayout(null);
+    this.setVisible(true);
+    this.setBackground(Color.black);
+    this.setResizable(false);
     this.level = 1;
     this.mode = c;
     this.t = new ArrayList<Integer>();
     this.ennemies = new ArrayList<PNJ>();
     this.joueurs = new ArrayList<PJ>();
-    System.out.print("\033[H\033[2J");
+    //System.out.print("\033[H\033[2J");
+
     if(this.mode == 'a')
     {
-      System.out.println("Bonjour Aventurier,\n");
-      System.out.println("Votre histoire commence ici. Nous sommes en 436E4 (436 ème année de la 4ème ère).");
-      System.out.println("Vous êtes le fils ainé du roi de la province de Fox Hound, votre père est le héros de cette province et il vous remet une quête de la plus haute importance.");
-      System.out.println("Il vous demande d'entrer dans un ancien avant-poste de l'alliance, d'éléminer tout les monstres qui l'occupe et de récupérer l'épée des lames, une épée légendaire qui peut térrasser un dragon en un seul coup.\n");
+      this.add(initialiseLabel("Bonjour Aventurier,", 0));
+      this.add(initialiseLabel("Votre histoire commence ici. Nous sommes en 436E4 (436 ème année de la 4ème ère).", 100));
+      this.add(initialiseLabel("Vous êtes le fils ainé du roi de la province de Fox Hound,", 150));
+      this.add(initialiseLabel("votre père est le héros de cette province et il vous remet une quête de la plus haute importance.", 200));
+      this.add(initialiseLabel("Il vous demande d'entrer dans un ancien avant-poste de l'alliance,", 250));
+      this.add(initialiseLabel("d'éléminer tout les monstres qui l'occupe et de récupérer l'épée des lames,", 300));
+      this.add(initialiseLabel("une épée légendaire qui peut térrasser un dragon en un seul coup.", 350));
+
+
 
       this.genererMap();
     }
 
     else if(this.mode == 'f')
     {
-      System.out.println("Bonjour Aventurier,\n");
-      System.out.println("Votre histoire commence ici et elle se finira ici.");
-      System.out.println("Des monstres ont réussi à tuer votre père le roi de la province de Fox hound, maintenant cette province s'appelle Xof et elle est dirigée par Skull face le mage noir.");
-      System.out.println("Il vous a lancé un sort grâce à sa maîtrise de la magie noire, vous condamnant à vous battre contre des monstres jusqu'à votre mort.\n");
+      this.add(initialiseLabel("Bonjour Aventurier,", 0));
+      this.add(initialiseLabel("Votre histoire commence ici et elle se finira ici.", 100));
+      this.add(initialiseLabel("Des monstres ont réussi à tuer votre père le roi de la province de Fox hound,",150));
+      this.add(initialiseLabel("maintenant cette province s'appelle Xof et elle est dirigée par Skull face le mage noir.",200));
+      this.add(initialiseLabel("Il vous a lancé un sort grâce à sa maîtrise de la magie noire,",250));
+      this.add(initialiseLabel("vous condamnant à vous battre contre des monstres jusqu'à votre mort.\n",300));
 
     }
 
     else
     {
-      System.out.println("Bonjour Aventurier,\n");
+      this.add(initialiseLabel("Bonjour Aventurier,", 0));
 
-      this.charger();
-
-      jeu('c');
+      this.afficheCharger();
     }
 
-    System.out.println("Vous pouvez demander de l'aide à votre frère si vous le souhaitez.");
-    System.out.print("Voulez-vous vous de l'aide (o = oui/ n = non) : ");
-    Scanner sc = new Scanner(System.in);
-    char rep;
-    do {
-      rep = sc.next().charAt(0);
-      if(rep != 'o' && rep != 'n')
-      {
-        System.out.print("Entrez o pour oui et n pour non : ");
-      }
-    } while (rep != 'o' && rep != 'n');
+    this.add(initialiseLabel("Vous pouvez demander de l'aide à votre frère si vous le souhaitez.", 450));
 
-    if(rep == 'o')
-    {
-      this.nbJoueurs = 2;
-    }
-    else
-    {
-      this.nbJoueurs = 1;
-    }
+    this.butOui = new JButton("Oui");
+    this.butNon = new JButton("Non");
 
-    this.jeu('a');
+    butNon.setLocation((this.w/3), ((this.h)/8)+550);
+    butOui.setLocation((this.w/6), ((this.h)/8)+550);
+
+    butNon.setSize(100, 50);
+    butOui.setSize(100, 50);
+
+    this.add(butOui);
+    this.add(butNon);
+
+    ButtonAideListener blis = new ButtonAideListener();
+
+    butOui.addActionListener(blis);
+    butNon.addActionListener(blis);
+
+
+    this.refresh();
+
+  }
+
+  public void refresh()
+  {
+    Image im = Toolkit.getDefaultToolkit().getImage("Server/Images/Environment/bg.jpg");
+    JLabel bg = new JLabel(new ImageIcon(im));
+    bg.setLocation(0, 0);
+    bg.setSize(w,h-10);
+
+    this.add(bg);
+    this.setSize(500, 300);
+    this.revalidate();
+    this.setSize(w, h-10);
+    this.revalidate();
+  }
+
+  public JLabel initialiseLabel(String s, int y)
+  {
+    JLabel jlbl = new JLabel(s);
+    jlbl.setForeground(Color.black);
+    jlbl.setFont(new Font("Cochin", Font.PLAIN, (this.w)/50));
+    jlbl.setLocation(((this.w)/7), (this.h/8)+y);
+    jlbl.setSize(1500, 50);
+
+    return jlbl;
+
   }
 
   public void menu()
@@ -98,7 +146,7 @@ public class Jeu{
     }
     else if(rep == 'c')
     {
-      this.charger();
+      this.afficheCharger();
     }
     else if(rep == 'q')
     {
@@ -106,138 +154,94 @@ public class Jeu{
     }
   }
 
-  public int nbrElements(String fichier)
+  public void afficheCharger()
   {
-    int i =0;
     try
     {
-      Scanner a = new Scanner(new File("Server/Save/"+fichier+".txt"));
-      while(a.hasNextInt())
-      {
-        a.nextInt();
-        i++;
-      }
-    }catch (Exception e) {
-      System.out.println("erreur lors du chargement !!!!");
-    }
-    return i;
-  }
-
- public String avancementCharge(int a)
- {
-   System.out.print("\033[H\033[2J");
-   String str = "";
-   this.avancement += (100.0/a);
-   for(int i=0; i<this.avancement/(100.0/a); i++)
-   {
-     str += "#";
-   }
-   return(str + " ("+Math.floor(this.avancement)+" %)");
- }
-
-  public void charger()
-  {
-    this.ennemies.clear();
-    this.joueurs.clear();
-    try
-    {
-      System.out.println("Nous avons trouvez ces parchemins, choisissez en un : \n");
+      this.add(initialiseLabel("Nous avons trouvez ces parchemins, choisissez en un : ", 100));
       File fic = new File("./Server/Save/");
 
       File[] files = fic.listFiles();
+      int k = 150;
+
+      CliqueAdapter blis = new CliqueAdapter();
 
       for (File file : files) {
           String che = file.getPath();
           String fi = che.substring(14, che.length()-4);
           SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-          System.out.println(fi+" : "+sdf.format(file.lastModified()));
+          JLabel lbl = initialiseLabel(fi+"\n: "+sdf.format(file.lastModified()), k);
+          this.add(lbl);
+          lbl.addMouseListener(blis);
+          k+=50;
         }
-      System.out.println("\n(Faites attention au majuscule !!!!!)");
-      Scanner sc = new Scanner(System.in);
-      String fichier = sc.next();
-      System.out.println(fichier);
+      this.refresh();
+    }catch (Exception e) {
+      System.out.println("erreur lors du chargement !!!!");
+    }
+  }
 
-      int nb = nbrElements(fichier);
+  public void charger(String s)
+  {
+    this.ennemies.clear();
+    this.joueurs.clear();
+    try
+    {
       this.avancement = 0.0;
-      Scanner f = new Scanner(new File("Server/Save/"+fichier+".txt"));
+      Scanner f = new Scanner(new File("Server/Save/"+s+".txt"));
       this.mode = ((char)f.nextInt());
-      System.out.println(this.avancementCharge(nb));
       this.level = f.nextInt();
-      System.out.println(this.avancementCharge(nb));
       this.taille = f.nextInt();
-      System.out.println(this.avancementCharge(nb));
       t.clear();
 
       for (int i = 0; i<this.taille*this.taille; i++)
       {
         t.add(f.nextInt());
-        System.out.println(this.avancementCharge(nb));
       }
 
       this.nbJoueurs = f.nextInt();
-      System.out.println(this.avancementCharge(nb));
       for (int i = 0; i<this.nbJoueurs; i++)
       {
         int longNom = f.nextInt();
-        System.out.println(this.avancementCharge(nb));
         String nom = "";
         for(int j = 0; j<longNom ; j++)
         {
           nom += ((char)f.nextInt());
-          System.out.println(this.avancementCharge(nb));
         }
         PJ p = new PJ();
         p.setNom(nom);
         p.setLvl(f.nextInt());
-        System.out.println(this.avancementCharge(nb));
         p.setForce(f.nextInt());
-        System.out.println(this.avancementCharge(nb));
         p.setAdresse(f.nextInt());
-        System.out.println(this.avancementCharge(nb));
         p.setResistance(f.nextInt());
-        System.out.println(this.avancementCharge(nb));
         p.setXp(f.nextInt());
-        System.out.println(this.avancementCharge(nb));
         p.setVie(f.nextInt());
-        System.out.println(this.avancementCharge(nb));
         p.setPosX(f.nextInt());
-        System.out.println(this.avancementCharge(nb));
         p.setPosY(f.nextInt());
-        System.out.println(this.avancementCharge(nb));
         p.setPa(f.nextInt());
-        System.out.println(this.avancementCharge(nb));
         p.setArme(new Arme(f.nextInt(), f.nextInt()));
-        System.out.println(this.avancementCharge(nb));
         p.setArmure(new Armure(f.nextInt(), f.nextInt()));
-        System.out.println(this.avancementCharge(nb));
         p.setSac(new Inventaire());
-        System.out.println(this.avancementCharge(nb));
         int nombre_elements = f.nextInt();
-        System.out.println(this.avancementCharge(nb));
         for (int j = 0; j<nombre_elements; j++)
         {
           //System.out.println("j = "+j+"\nnb = "+p.getSac().getNb_Equipement());
           int equipement = f.nextInt();
-          System.out.println(this.avancementCharge(nb));
           if(equipement == 0)
           {
             p.getSac().AddElementBP(new Arme(f.nextInt(), f.nextInt()));
-            System.out.println(this.avancementCharge(nb));
           }
           else if(equipement == 1)
           {
             p.getSac().AddElementBP(new Armure(f.nextInt(), f.nextInt()));
-            System.out.println(this.avancementCharge(nb));
           }
           else if(equipement == 2)
           {
             p.getSac().AddElementBP(new Potion_Degat(f.nextInt()));
-            System.out.println(this.avancementCharge(nb));
           }
           else if(equipement == 3)
           {
             p.getSac().AddElementBP(new Potion_Soin(f.nextInt()));
-            System.out.println(this.avancementCharge(nb));
           }
         }
         this.joueurs.add(p);
@@ -247,48 +251,36 @@ public class Jeu{
         this.joueurs.add(new PJ());
       }
       Map.Nb_Enemies = f.nextInt();
-      System.out.println(this.avancementCharge(nb));
 
       for(int i = 0; i<Map.Nb_Enemies; i++)
       {
         PNJ pnj = new PNJ();
         pnj.setNom("Monstre");
         pnj.setLvl(f.nextInt());
-        System.out.println(this.avancementCharge(nb));
         pnj.setForce(f.nextInt());
-        System.out.println(this.avancementCharge(nb));
         pnj.setAdresse(f.nextInt());
-        System.out.println(this.avancementCharge(nb));
         pnj.setResistance(f.nextInt());
-        System.out.println(this.avancementCharge(nb));
         pnj.setXp(f.nextInt());
-        System.out.println(this.avancementCharge(nb));
         pnj.setVie(f.nextInt());
-        System.out.println(this.avancementCharge(nb));
         pnj.setPosX(f.nextInt());
-        System.out.println(this.avancementCharge(nb));
         pnj.setPosY(f.nextInt());
-        System.out.println(this.avancementCharge(nb));
         pnj.setTypeMonstre(f.nextInt());
-        System.out.println(this.avancementCharge(nb));
         pnj.setLoot(new Arme(f.nextInt(), f.nextInt()));
-        System.out.println(this.avancementCharge(nb));
 
         this.ennemies.add(pnj);
-        System.out.println(this.avancementCharge(nb));
       }
-      System.out.println(this.avancementCharge(nb));
-      System.out.println(this.avancementCharge(nb));
       System.out.println("chargement éffectué");
     }catch (Exception e) {
       System.out.println("erreur lors du chargement !!!!");
-      charger();
+      afficheCharger();
     }
     System.out.println("(Entrer)");
     Scanner sc = new Scanner(System.in);
     sc.nextLine();
 
     this.m = new Map(t, level, taille, ennemies, joueurs);
+
+    jeu('c');
   }
 
   public void sauver(String fichier)
@@ -601,6 +593,75 @@ public class Jeu{
         }
       }
       this.level++;
+    }
+  }
+
+  class ButtonAideListener implements ActionListener
+  {
+    public void actionPerformed(ActionEvent e)
+    {
+      if(e.getSource() == butOui)
+      {
+        nbJoueurs = 2;
+        jeu('a');
+      }
+
+      else if(e.getSource() == butNon)
+      {
+        nbJoueurs = 1;
+        jeu('a');
+      }
+      else
+      {
+        System.out.println("LLLLLLLOOOOOOOOLLLLLLLLLJEJZJ");
+        System.out.println(e.getActionCommand());
+      }
+    }
+
+  }
+  class CliqueAdapter extends MouseAdapter
+  {
+    public void mouseClicked(MouseEvent e)
+    {
+      JLabel labelClicked = (JLabel) e.getSource();
+      String s = "";
+      String s1 = labelClicked.getText();
+      int i = 0;
+      while(s1.charAt(i) != '\n')
+      {
+        s+=s1.charAt(i);
+        i++;
+      }
+      System.out.println(s);
+      dispose();
+      charger(s);
+
+    }
+
+    public void mousePressed(MouseEvent e)
+    {
+      JLabel labelClicked = (JLabel) e.getSource();
+      //System.out.println(e.paramString());
+    }
+
+    public void mouseReleased(MouseEvent e)
+    {
+      JLabel labelClicked = (JLabel) e.getSource();
+      //System.out.println(e.paramString());
+    }
+
+    public void mouseEntered(MouseEvent e)
+    {
+      JLabel labelClicked = (JLabel) e.getSource();
+      labelClicked.setForeground(Color.red);
+      //System.out.println(e.paramString());
+    }
+
+    public void mouseExited(MouseEvent e)
+    {
+      JLabel labelClicked = (JLabel) e.getSource();
+      labelClicked.setForeground(Color.black);
+      //System.out.println(e.paramString());
     }
   }
 }
