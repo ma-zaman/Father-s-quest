@@ -11,6 +11,7 @@ public class PJ extends Personnage {
   private Inventaire sac;
   private Armure armure_P;
   private Arme arme_P;
+  private Jeu jeu;
 
 
 
@@ -25,10 +26,11 @@ public class PJ extends Personnage {
     this.setVie(0);
   }
 
-  public PJ(int x, int y)
+  public PJ(Jeu j, int x, int y)
   {
-    super(x, y);
-    this.selectionClasse();
+    super(j, x, y);
+    this.jeu = j;
+    //this.selectionClasse();
   	this.setLvl(1);
   	this.setPa(3);
   	this.setPamax(3);

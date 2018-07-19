@@ -2,21 +2,46 @@
 import java.util.Scanner;
 import java.util.Random;
 import java.util.*;
+import java.io.*;
+import java.awt.event.*;
+import java.text.SimpleDateFormat;
+import javax.swing.*;
+import java.awt.*;
+
 //import com.modeliosoft.modelio.javadesigner.annotations.objid;
 public abstract class Personnage {
   private int lvl;
   private String nom;
   private int force;
+  private JLabel lblForce;
   private int adresse;
+  private JLabel lblAdresse;
   private int resistance;
+  private JLabel lblResistance;
   private int xp;
   private int vie;
   private int vieMax;
   private int posX;
   private int posY;
+  private Jeu jeu;
+  private JTextField lab;
+
+  private JLabel lblPtsRestant;
+
+  private JButton forcePlus;
+  private JButton forceMoins;
+  private JButton adressePlus;
+  private JButton adresseMoins;
+  private JButton resistancePlus;
+  private JButton resistanceMoins;
+
+  private Image player;
+
+  public static int nbPerso = 0;
 
     public Personnage()
     {
+      nbPerso++;
       this.posX = -1;
       this.posY = -1;
 
@@ -32,6 +57,7 @@ public abstract class Personnage {
 
     public Personnage(String nom, int vie, int xp, int x, int y, int f, int a, int r)
     {
+      nbPerso++;
       this.nom = nom;
 
       this.vie = vie;
@@ -47,7 +73,11 @@ public abstract class Personnage {
       this.resistance = r;
     }
 
-    public Personnage(int x, int y) {
+    public Personnage(Jeu j, int x, int y) {
+        nbPerso++;
+        this.jeu = j;
+        jeu.getContentPane().removeAll();
+
         this.posX = x;
         this.posY = y;
 
@@ -56,9 +86,9 @@ public abstract class Personnage {
 
         this.xp = 0;
 
-        this.force = -1;
-        this.adresse = -1;
-        this.resistance = -1;
+        this.force = 0;
+        this.adresse = 0;
+        this.resistance = 0;
 
         try {
           this.setCaracteristiques();
@@ -73,115 +103,94 @@ public abstract class Personnage {
     {
       int i=0;
       int Val;
-      Scanner sc = new Scanner(System.in);
-      System.out.println("Entrez le nom de votre hero : ");
-      this.nom = sc.next();
-      while (i<18)
+      String color;
+      if(nbPerso == 1)
       {
-
-        Representation_caracteristiques();
-        System.out.println("force : ");
-        Val = sc.nextInt();
-        i += Val;
-        if(i<=18)
-        {
-          this.force = Val;
-          Representation_caracteristiques();
-          System.out.println("adresse : ");
-          Val = sc.nextInt();
-          i += Val;
-          if(i<=18)
-          {
-            this.adresse = Val;
-            this.resistance = (18-i);
-            i+=this.resistance;
-            Representation_caracteristiques();
-            System.out.println("Voulez-vous valider vos capacitées (o :oui/n :non): ");
-            char c = sc.next().charAt(0);
-
-            if (c != 'o')
-            {
-              this.force = -1;
-              this.adresse = -1;
-              this.resistance = -1;
-
-              i=0;
-            }
-          }
-
-          else
-          {
-            this.force = -1;
-            this.adresse = -1;
-            this.resistance = -1;
-
-            i=0;
-          }
-        }
-
-        else
-        {
-          i=0;
-        }
-
+        color = "Blue";
       }
-    }
+      else
+      {
+        color = "Green";
+      }
+      ImageIcon playerIcon = new ImageIcon("Server/Images/Unit/"+color+"_Villager.png");
+      Image playerimage = playerIcon.getImage();
+      player = playerimage.getScaledInstance((jeu.getW()/3)*2, (jeu.getH()/10)*9,  java.awt.Image.SCALE_SMOOTH);
+      JLabel playerLabel = new JLabel(new ImageIcon(player));
+      playerLabel.setLocation(((jeu.getW())/3), (jeu.getH()/10));
+      playerLabel.setSize((jeu.getW()/3)*2, (jeu.getH()/10)*9);
+      jeu.add(jeu.initialiseLabel("Entrez le nom de votre hero : ", 200, (jeu.getH()/8)+0));
+      lab = new JTextField(25);
+      lab.setText("");
+      lab.setOpaque(false);
+      lab.setLocation(((jeu.getW())/4)+200, (jeu.getH()/8)+20);
+      lab.setSize(150, 25);
+      jeu.add(lab);
+      jeu.add(jeu.initialiseLabel("Force : ", 200, (jeu.getH()/8)*2));
+      jeu.add(jeu.initialiseLabel("Adresse : ", 200, (jeu.getH()/8)*3));
+      jeu.add(jeu.initialiseLabel("Resistance : ", 200, (jeu.getH()/8)*4));
+      forcePlus = new JButton("+");
+      lblForce = jeu.initialiseLabel(""+force, (jeu.getW()/6+165), (jeu.getH()/8)*2);
+      forceMoins = new JButton("-");
+      adressePlus = new JButton("+");
+      lblAdresse = jeu.initialiseLabel(""+adresse, (jeu.getW()/6+165), (jeu.getH()/8)*3);
+      adresseMoins = new JButton("-");
+      resistancePlus = new JButton("+");
+      lblResistance = jeu.initialiseLabel(""+resistance, (jeu.getW()/6+165), (jeu.getH()/8)*4);
+      resistanceMoins = new JButton("-");
 
-    private void Representation_caracteristiques() {
-        int i=0;
-        int pts=18;
-        String F="";
-        String A="";
-        String R="";
-        if(this.force != -1)
-        {
-          pts -= this.force;
-        }
-        if(this.adresse != -1)
-        {
-          pts -= this.adresse;
-        }
-        if(this.resistance != -1)
-        {
-          pts -= this.resistance;
-        }
-        System.out.print("\033[H\033[2J");
-        System.out.println("\nForce : la puissance physique du hero.");
-        System.out.println("adresse : la capacité du hero à mouvoir son corps comme il l’entend.");
-        System.out.println("Résistance : le point jusqu’auquel le corps du hero peut résister aux agressions extérieures\n");
-        System.out.println("Il vous reste " + pts + " points à répartir\n");
-        while(i<this.force)
-        {
-            F+="#";
-              i++;
-        }
-        i=0;
-        while(i<this.adresse)
-        {
-              A+="#";
-              i++;
-        }
-        i=0;
-        while(i<this.resistance)
-        {
-              R+="#";
-              i++;
-        }
+      JButton valide = new JButton("Valider");
 
-        if(this.force != -1)
-        {
-              System.out.println("Force : "+F+" ("+this.force+")");
-        }
+      lblPtsRestant = jeu.initialiseLabel("18 points restants.", (jeu.getW()/6), (jeu.getH()/8)*5);
 
-        if(this.adresse != -1)
-        {
-              System.out.println("adresse : "+A+" ("+this.adresse+")");
-        }
+      forcePlus.setLocation((jeu.getW()/6+200), (jeu.getH()/8)*2+20);
+      forcePlus.setSize(50, 25);
 
-        if(this.resistance != -1)
-        {
-              System.out.println("Résistance : "+R+" ("+this.resistance+")");
-        }
+      forceMoins.setLocation((jeu.getW()/6+100), (jeu.getH()/8)*2+20);
+      forceMoins.setSize(50, 25);
+
+      adressePlus.setLocation((jeu.getW()/6+200), (jeu.getH()/8)*3+20);
+      adressePlus.setSize(50, 25);
+
+      adresseMoins.setLocation((jeu.getW()/6+100), (jeu.getH()/8)*3+20);
+      adresseMoins.setSize(50, 25);
+
+      resistancePlus.setLocation((jeu.getW()/6+200), (jeu.getH()/8)*4+20);
+      resistancePlus.setSize(50, 25);
+
+      resistanceMoins.setLocation((jeu.getW()/6+100), (jeu.getH()/8)*4+20);
+      resistanceMoins.setSize(50, 25);
+
+      valide.setLocation((jeu.getW()/6+50), (jeu.getH()/8)*5+100);
+      valide.setSize(200, 50);
+
+      forceMoins.setEnabled(false);
+      adresseMoins.setEnabled(false);
+      resistanceMoins.setEnabled(false);
+
+      jeu.add(forceMoins);
+      jeu.add(lblForce);
+      jeu.add(forcePlus);
+      jeu.add(adresseMoins);
+      jeu.add(lblAdresse);
+      jeu.add(adressePlus);
+      jeu.add(resistanceMoins);
+      jeu.add(lblResistance);
+      jeu.add(resistancePlus);
+      jeu.add(lblPtsRestant);
+      jeu.add(playerLabel);
+      jeu.add(valide);
+
+      BoutonStatListener bSL = new BoutonStatListener();
+
+      forcePlus.addActionListener(bSL);
+      forceMoins.addActionListener(bSL);
+      adressePlus.addActionListener(bSL);
+      adresseMoins.addActionListener(bSL);
+      resistancePlus.addActionListener(bSL);
+      resistanceMoins.addActionListener(bSL);
+      valide.addActionListener(bSL);
+
+      jeu.refresh();
     }
 
     public int getLvl(){
@@ -286,5 +295,98 @@ public abstract class Personnage {
   			return false;
   		}
   	}
+
+    class BoutonStatListener implements ActionListener
+    {
+
+      public void actionPerformed(ActionEvent e)
+      {
+        if(e.getActionCommand().equals("Valider") && force+adresse+resistance == 18 && !(lab.getText().equals("")) && lab.getText().charAt(0)!=' ')
+        {
+          System.exit(0);
+        }
+        if(e.getSource() == forcePlus && force+adresse+resistance < 18)
+        {
+          force++;
+
+          lblForce.setText(""+force);
+        }
+
+        else if(e.getSource() == forceMoins && force > 0)
+        {
+          force--;
+
+          lblForce.setText(""+force);
+        }
+
+        else if(e.getSource() == resistancePlus && force+adresse+resistance < 18)
+        {
+          resistance++;
+
+          lblResistance.setText(""+resistance);
+        }
+
+        else if(e.getSource() == resistanceMoins && resistance > 0)
+        {
+          resistance--;
+
+          lblResistance.setText(""+resistance);
+        }
+
+        else if(e.getSource() == adressePlus && force+adresse+resistance < 18)
+        {
+          adresse++;
+
+          lblAdresse.setText(""+adresse);
+        }
+
+        else if(e.getSource() == adresseMoins && adresse > 0)
+        {
+          adresse--;
+
+          lblAdresse.setText(""+adresse);
+        }
+
+        if (force+adresse+resistance >= 18)
+        {
+          forcePlus.setEnabled(false);
+          adressePlus.setEnabled(false);
+          resistancePlus.setEnabled(false);
+        }
+        else
+        {
+          forcePlus.setEnabled(true);
+          adressePlus.setEnabled(true);
+          resistancePlus.setEnabled(true);
+        }
+        if(force <= 0)
+        {
+          forceMoins.setEnabled(false);
+        }
+        else
+        {
+          forceMoins.setEnabled(true);
+        }
+        if(adresse <= 0)
+        {
+          adresseMoins.setEnabled(false);
+        }
+        else
+        {
+          adresseMoins.setEnabled(true);
+        }
+        if(resistance <= 0)
+        {
+          resistanceMoins.setEnabled(false);
+        }
+
+        else
+        {
+          resistanceMoins.setEnabled(true);
+        }
+        int pts = 18-(force+adresse+resistance);
+        lblPtsRestant.setText(""+pts+" points restants.");
+      }
+    }
 
 }

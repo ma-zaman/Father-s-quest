@@ -42,19 +42,19 @@ public class Father_s_Quest extends JFrame {
   {
     Random rand = new Random();
 
-    ImageIcon solIcon = new ImageIcon("Server/Images/Tile/medievalTile_57.png");
+    ImageIcon solIcon = new ImageIcon("Server/Images/Tile/Grass_1.png");
     Image sol = solIcon.getImage();
 	  Image solnew = sol.getScaledInstance(120, 120,  java.awt.Image.SCALE_SMOOTH);
 
-    ImageIcon arbreIcon = new ImageIcon("Server/Images/Environment/medievalEnvironment_02.png");
+    ImageIcon arbreIcon = new ImageIcon("Server/Images/Environment/Tree_1.png");
     Image arbre = arbreIcon.getImage();
 	  Image arbrenew = arbre.getScaledInstance(120, 120,  java.awt.Image.SCALE_SMOOTH);
 
-    ImageIcon soldatIcon = new ImageIcon("Server/Images/Unit/medievalUnit_03.png");
+    ImageIcon soldatIcon = new ImageIcon("Server/Images/Unit/Red_Villager.png");
     Image soldat = soldatIcon.getImage();
 	  Image soldatnew = soldat.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH);
 
-    ImageIcon eauIcon = new ImageIcon("Server/Images/Tile/medievalTile_28.png");
+    ImageIcon eauIcon = new ImageIcon("Server/Images/Tile/Water_1.png");
     Image eau = eauIcon.getImage();
 	  Image eaunew = eau.getScaledInstance(120, 120,  java.awt.Image.SCALE_SMOOTH);
 

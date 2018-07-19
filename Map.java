@@ -295,22 +295,22 @@
       p.setPa(0);
     }
 
-    public boolean mouvementPJ(ArrayList<PJ> joueurs, int i)
+    public boolean mouvementPJ(ArrayList<PJ> joueurs, int i, char c)
     {
       PJ p = joueurs.get(i);
       while(p.getPa()>0)
       {
-        System.out.print("\033[H\033[2J");
-        System.out.println(ANSI_GREEN_BACKGROUND + ANSI_BLUE + "Tour de " + p.getNom()+ANSI_RESET);
+        //System.out.print("\033[H\033[2J");
+        //System.out.println(ANSI_GREEN_BACKGROUND + ANSI_BLUE + "Tour de " + p.getNom()+ANSI_RESET);
         this.Afficher();
-        System.out.println(p);
-        char c = getValAction();
+        //System.out.println(p);
+        //char c = getValAction();
         p.setPa(p.getPa()-1);
-        if(c == 'm')
+        if(c == 'M')
         {
           return true;
         }
-        if(c == 'a')
+        if(c == 'A')
         {
           PNJ p1;
           int posE = this.testCombat(p);
@@ -343,12 +343,12 @@
           }
         }
 
-        else if (c == 'w')
+        else if (c == 'W')
         {
           testLoot(p);
         }
 
-        else if(c == 'i')
+        else if(c == 'I')
         {
           System.out.println(p.getSac());
           Scanner sc = new Scanner(System.in);
@@ -410,33 +410,33 @@
           p.setPa(p.getPa()+1);
         }
 
-        else if(c == 'p')
+        else if(c == 'P')
         {
           this.passeTour(p);
         }
 
-        else if(c == 'z' && this.Room[p.getPosY()-1][p.getPosX()] == null)
+        else if(c == 'Z' && this.Room[p.getPosY()-1][p.getPosX()] == null)
         {
           this.set_Case_Map(p.getPosY()-1, p.getPosX(), p);
           this.set_Case_Map(p.getPosY(), p.getPosX(), null);
           p.setPosY(p.getPosY()-1);
         }
 
-        else if(c == 'q' && this.Room[p.getPosY()][p.getPosX()-1] == null)
+        else if(c == 'Q' && this.Room[p.getPosY()][p.getPosX()-1] == null)
         {
           this.set_Case_Map(p.getPosY(), p.getPosX()-1, p);
           this.set_Case_Map(p.getPosY(), p.getPosX(), null);
           p.setPosX(p.getPosX()-1);
         }
 
-        else if(c == 's' && this.Room[p.getPosY()+1][p.getPosX()] == null)
+        else if(c == 'S' && this.Room[p.getPosY()+1][p.getPosX()] == null)
         {
           this.set_Case_Map(p.getPosY()+1, p.getPosX(), p);
           this.set_Case_Map(p.getPosY(), p.getPosX(), null);
           p.setPosY(p.getPosY()+1);
         }
 
-        else if(c == 'd' && this.Room[p.getPosY()][p.getPosX()+1] == null)
+        else if(c == 'D' && this.Room[p.getPosY()][p.getPosX()+1] == null)
         {
           this.set_Case_Map(p.getPosY(), p.getPosX()+1, p);
           this.set_Case_Map(p.getPosY(), p.getPosX(), null);

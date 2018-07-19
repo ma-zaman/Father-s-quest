@@ -37,17 +37,23 @@ public class Jeu extends JFrame {
     this.t = new ArrayList<Integer>();
     this.ennemies = new ArrayList<PNJ>();
     this.joueurs = new ArrayList<PJ>();
+
+    this.setFocusable(true);
+
+    KListener lis = new KListener();
+    this.addKeyListener(lis);
+
     //System.out.print("\033[H\033[2J");
 
     if(this.mode == 'a')
     {
-      this.add(initialiseLabel("Bonjour Aventurier,", 0));
-      this.add(initialiseLabel("Votre histoire commence ici. Nous sommes en 436E4 (436 ème année de la 4ème ère).", 100));
-      this.add(initialiseLabel("Vous êtes le fils ainé du roi de la province de Fox Hound,", 150));
-      this.add(initialiseLabel("votre père est le héros de cette province et il vous remet une quête de la plus haute importance.", 200));
-      this.add(initialiseLabel("Il vous demande d'entrer dans un ancien avant-poste de l'alliance,", 250));
-      this.add(initialiseLabel("d'éléminer tout les monstres qui l'occupe et de récupérer l'épée des lames,", 300));
-      this.add(initialiseLabel("une épée légendaire qui peut térrasser un dragon en un seul coup.", 350));
+      this.add(initialiseLabel("Bonjour Aventurier,", ((this.w)/7), (this.h/8)+0));
+      this.add(initialiseLabel("Votre histoire commence ici. Nous sommes en 436E4 (436 ème année de la 4ème ère).", ((this.w)/7), (this.h/8)+100));
+      this.add(initialiseLabel("Vous êtes le fils ainé du roi de la province de Fox Hound,", ((this.w)/7), (this.h/8)+150));
+      this.add(initialiseLabel("votre père est le héros de cette province et il vous remet une quête de la plus haute importance.", ((this.w)/7), (this.h/8)+200));
+      this.add(initialiseLabel("Il vous demande d'entrer dans un ancien avant-poste de l'alliance,", ((this.w)/7), (this.h/8)+250));
+      this.add(initialiseLabel("d'éléminer tout les monstres qui l'occupe et de récupérer l'épée des lames,", ((this.w)/7), (this.h/8)+300));
+      this.add(initialiseLabel("une épée légendaire qui peut térrasser un dragon en un seul coup.", ((this.w)/7), (this.h/8)+350));
 
 
 
@@ -56,23 +62,23 @@ public class Jeu extends JFrame {
 
     else if(this.mode == 'f')
     {
-      this.add(initialiseLabel("Bonjour Aventurier,", 0));
-      this.add(initialiseLabel("Votre histoire commence ici et elle se finira ici.", 100));
-      this.add(initialiseLabel("Des monstres ont réussi à tuer votre père le roi de la province de Fox hound,",150));
-      this.add(initialiseLabel("maintenant cette province s'appelle Xof et elle est dirigée par Skull face le mage noir.",200));
-      this.add(initialiseLabel("Il vous a lancé un sort grâce à sa maîtrise de la magie noire,",250));
-      this.add(initialiseLabel("vous condamnant à vous battre contre des monstres jusqu'à votre mort.\n",300));
+      this.add(initialiseLabel("Bonjour Aventurier,", ((this.w)/7), (this.h/8)+0));
+      this.add(initialiseLabel("Votre histoire commence ici et elle se finira ici.", ((this.w)/7), (this.h/8)+100));
+      this.add(initialiseLabel("Des monstres ont réussi à tuer votre père le roi de la province de Fox hound,", ((this.w)/7), (this.h/8)+50));
+      this.add(initialiseLabel("maintenant cette province s'appelle Xof et elle est dirigée par Skull face le mage noir.", ((this.w)/7), (this.h/8)+00));
+      this.add(initialiseLabel("Il vous a lancé un sort grâce à sa maîtrise de la magie noire,", ((this.w)/7), (this.h/8)+50));
+      this.add(initialiseLabel("vous condamnant à vous battre contre des monstres jusqu'à votre mort.\n", ((this.w)/7), (this.h/8)+00));
 
     }
 
     else
     {
-      this.add(initialiseLabel("Bonjour Aventurier,", 0));
+      this.add(initialiseLabel("Bonjour Aventurier,", ((this.w)/7), (this.h/8)+0));
 
       this.afficheCharger();
     }
 
-    this.add(initialiseLabel("Vous pouvez demander de l'aide à votre frère si vous le souhaitez.", 450));
+    this.add(initialiseLabel("Vous pouvez demander de l'aide à votre frère si vous le souhaitez.", ((this.w)/7), (this.h/8)+450));
 
     this.butOui = new JButton("Oui");
     this.butNon = new JButton("Non");
@@ -96,6 +102,17 @@ public class Jeu extends JFrame {
 
   }
 
+
+  public int getW()
+  {
+    return this.w;
+  }
+
+  public int getH()
+  {
+    return this.h;
+  }
+
   public void refresh()
   {
     Image im = Toolkit.getDefaultToolkit().getImage("Server/Images/Environment/bg.jpg");
@@ -110,12 +127,12 @@ public class Jeu extends JFrame {
     this.revalidate();
   }
 
-  public JLabel initialiseLabel(String s, int y)
+  public JLabel initialiseLabel(String s, int x, int y)
   {
     JLabel jlbl = new JLabel(s);
     jlbl.setForeground(Color.black);
     jlbl.setFont(new Font("Cochin", Font.PLAIN, (this.w)/50));
-    jlbl.setLocation(((this.w)/7), (this.h/8)+y);
+    jlbl.setLocation(x, y);
     jlbl.setSize(1500, 50);
 
     return jlbl;
@@ -158,7 +175,7 @@ public class Jeu extends JFrame {
   {
     try
     {
-      this.add(initialiseLabel("Nous avons trouvez ces parchemins, choisissez en un : ", 100));
+      this.add(initialiseLabel("Nous avons trouvez ces parchemins, choisissez en un : ", ((this.w)/7), (this.h/8)+100));
       File fic = new File("./Server/Save/");
 
       File[] files = fic.listFiles();
@@ -170,7 +187,7 @@ public class Jeu extends JFrame {
           String che = file.getPath();
           String fi = che.substring(14, che.length()-4);
           SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-          JLabel lbl = initialiseLabel(fi+"\n: "+sdf.format(file.lastModified()), k);
+          JLabel lbl = initialiseLabel(fi+"\n: "+sdf.format(file.lastModified()), ((this.w)/7), (this.h/8)+k);
           this.add(lbl);
           lbl.addMouseListener(blis);
           k+=50;
@@ -280,7 +297,7 @@ public class Jeu extends JFrame {
 
     this.m = new Map(t, level, taille, ennemies, joueurs);
 
-    jeu('c');
+    jeu('c', true);
   }
 
   public void sauver(String fichier)
@@ -458,7 +475,7 @@ public class Jeu extends JFrame {
   {
     for (int i = 0; i<this.nbJoueurs; i++)
     {
-      this.m.set_Case_Map(1, i+1, new PJ(i+1, 1));
+      this.m.set_Case_Map(1, i+1, new PJ(this, i+1, 1));
       this.joueurs.add((PJ)this.m.get_Case_Map(1, i+1));
     }
     if(this.nbJoueurs == 1)
@@ -500,99 +517,112 @@ public class Jeu extends JFrame {
     }
   }
 
-  public void jeu(char c)
+  public void jeu(char c, boolean test)
   {
-    boolean flag = true;
-    while(flag || !this.joueurs.get(0).estMort() || !this.joueurs.get(1).estMort())
+    boolean flag = test;
+    if(this.mode == 'a' && c != 'c')
     {
-      if(this.mode == 'a' && c != 'c')
+      if(this.level == 6)
       {
-        if(this.level == 6)
-        {
-          System.out.println("Bravo aventurier,\n");
-          System.out.println("Vous avez liberer l'avant-poste et vous avez l'epee des lames.");
-          System.out.println("Grace à vous la province de Fox Hound peut vivre en paix");
-          System.exit(0);
-        }
-        this.genererMap();
+        System.out.println("Bravo aventurier,\n");
+        System.out.println("Vous avez liberer l'avant-poste et vous avez l'epee des lames.");
+        System.out.println("Grace à vous la province de Fox Hound peut vivre en paix");
+        System.exit(0);
       }
-      else if(this.mode == 'f' && c != 'c')
+      this.genererMap();
+    }
+    else if(this.mode == 'f' && c != 'c')
+    {
+      this.m = new Map(this.level);
+      this.taille = this.level*5;
+      if(this.taille > 50)
       {
-        this.m = new Map(this.level);
-        this.taille = this.level*5;
-        if(this.taille > 50)
-        {
-          this.taille = 50;
-        }
+        this.taille = 50;
       }
-      if(flag && c != 'c')
-      {
-        this.creationPJ();
-        flag = false;
-      }
-      else
-      {
-        flag = false;
-      }
-      if(c != 'c')
-      {
-        this.initailisePJ();
-        this.initailisePNJ();
-      }
+    }
+    if(flag && c != 'c')
+    {
+      this.creationPJ();
+      flag = false;
+    }
+    else
+    {
+      flag = false;
+    }
+    if(c != 'c')
+    {
+      this.initailisePJ();
+      this.initailisePNJ();
+    }
 
-      while(Map.Nb_Enemies > 0)
+    if(this.joueurs.get(0).getPa()<=0 && this.joueurs.get(1).getPa()<=0)
+    {
+      c = 'a';
+      for (int i = 0; i<Map.Nb_Enemies; i++)
       {
-        c = 'a';
-        if(this.joueurs.get(0).estMort() && this.joueurs.get(1).estMort())
+        if(this.ennemies.get(i).estMort())
         {
-          System.out.println("¡¡¡¡¡ GAME OVER !!!!!");
-          Map.Nb_Enemies = -1;
+          this.ennemies.remove(i);
+          Map.Nb_Enemies-=1;
+          i--;
         }
-        else
+        if(i>=0)
         {
-          for (int i = 0; i<2; i++)
+          Random rand = new Random();
+          int alea = rand.nextInt(2);
+          if(!this.joueurs.get(alea).estMort())
           {
-            if(!this.joueurs.get(i).estMort())
-            {
-              if(this.m.mouvementPJ(this.joueurs, i))
-              {
-                this.menu();
-              }
-              this.joueurs.get(i).setPa(3);
-            }
+            this.m.mouvementPNJ(this.ennemies.get(i), this.joueurs, alea);
           }
-        }
-        for (int i = 0; i<Map.Nb_Enemies; i++)
-        {
-          if(this.ennemies.get(i).estMort())
+          else
           {
-            this.ennemies.remove(i);
-            Map.Nb_Enemies-=1;
-            i--;
-          }
-          if(i>=0)
-          {
-            Random rand = new Random();
-            int alea = rand.nextInt(2);
-            if(!this.joueurs.get(alea).estMort())
+            if(alea == 1)
             {
-              this.m.mouvementPNJ(this.ennemies.get(i), this.joueurs, alea);
+              this.m.mouvementPNJ(this.ennemies.get(i), this.joueurs, 0);
             }
             else
             {
-              if(alea == 1)
-              {
-                this.m.mouvementPNJ(this.ennemies.get(i), this.joueurs, 0);
-              }
-              else
-              {
-                this.m.mouvementPNJ(this.ennemies.get(i), this.joueurs, 1);
-              }
+              this.m.mouvementPNJ(this.ennemies.get(i), this.joueurs, 1);
             }
           }
         }
       }
+    }
+    if(this.joueurs.get(0).estMort() && this.joueurs.get(1).estMort())
+    {
+      System.out.println("¡¡¡¡¡ GAME OVER !!!!!");
+      Map.Nb_Enemies = -1;
+    }
+    else
+    {
+      for (int i = 0; i<2; i++)
+      {
+        if(!this.joueurs.get(i).estMort() && this.joueurs.get(i).getPa() <= 0)
+        {
+          this.joueurs.get(i).setPa(3);
+        }
+      }
+    }
+    if(Map.Nb_Enemies == 0)
+    {
       this.level++;
+      jeu('a', false);
+    }
+    else if(Map.Nb_Enemies == -1)
+    {
+      System.exit(0);
+    }
+    if((flag || !this.joueurs.get(0).estMort() || !this.joueurs.get(1).estMort()))
+    {
+      try
+      {
+        this.m.Afficher();
+        Thread.sleep(100);
+        jeu('c', false);
+      }
+      catch (Exception e) {
+        System.out.println("llllolomlololololollolo");
+      }
     }
   }
 
@@ -603,13 +633,13 @@ public class Jeu extends JFrame {
       if(e.getSource() == butOui)
       {
         nbJoueurs = 2;
-        jeu('a');
+        jeu('a', true);
       }
 
       else if(e.getSource() == butNon)
       {
         nbJoueurs = 1;
-        jeu('a');
+        jeu('a', true);
       }
       else
       {
@@ -619,6 +649,7 @@ public class Jeu extends JFrame {
     }
 
   }
+
   class CliqueAdapter extends MouseAdapter
   {
     public void mouseClicked(MouseEvent e)
@@ -662,6 +693,26 @@ public class Jeu extends JFrame {
       JLabel labelClicked = (JLabel) e.getSource();
       labelClicked.setForeground(Color.black);
       //System.out.println(e.paramString());
+    }
+  }
+
+  class KListener implements KeyListener
+  {
+    public void keyReleased(KeyEvent e)
+    {
+      System.out.println((char)e.getKeyCode()+"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+      if(m.mouvementPJ(joueurs, 1, (char)e.getKeyCode()))
+      {
+        menu();
+      }
+    }
+    public void keyPressed(KeyEvent e)
+    {
+      return;
+    }
+    public void keyTyped(KeyEvent e)
+    {
+      return;
     }
   }
 }
